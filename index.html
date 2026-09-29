@@ -19,134 +19,180 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
     margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    background: #f5f5f7; color: #111; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background: #f5f5f7; color: #111;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
-  .wrap { max-width: 520px; margin: 0 auto; padding: 16px 16px 40px; }
-  h1 { font-size: 22px; margin: 8px 0 2px; }
-  .sub { color: #666; font-size: 13px; margin-bottom: 16px; }
-  .card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
-  .big-total { font-size: 44px; font-weight: 800; letter-spacing: -1px; }
-  .goal-line { color: #666; font-size: 14px; margin-top: 2px; }
-  .bar { height: 10px; background: #e8e8ec; border-radius: 6px; margin-top: 12px; overflow: hidden; }
-  .bar > div { height: 100%; background: #111; border-radius: 6px; transition: width .3s; }
-  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  .stat { background: #fff; border-radius: 14px; padding: 12px 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
-  .stat .v { font-size: 20px; font-weight: 700; }
-  .stat .l { font-size: 11px; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: .4px; }
-  .stat .v.good { color: #1a7f37; }
-  .best-row { display: flex; justify-content: space-between; align-items: center; font-size: 16px; padding: 8px 2px; }
-  .best-row + .best-row { border-top: 1px solid #eee; }
-  .best-row .k { color: #666; }
-  .best-row .val { font-weight: 700; }
-  .best-row .val small { font-weight: 400; color: #999; }
-  .date-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .date-row input[type="date"] { flex: 1; font-size: 17px; padding: 12px; border: 1px solid #ddd; border-radius: 12px; background: #fff; font-family: inherit; }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 12px 16px 40px; }
+
+  /* Header */
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin: 10px 4px 14px; }
+  .topbar h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; margin: 0; }
+  .iconbtn {
+    width: 44px; height: 44px; border-radius: 999px; border: none; background: #ececf1;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .iconbtn:active { transform: scale(.94); }
+  .iconbtn svg { width: 22px; height: 22px; stroke: #111; fill: none; stroke-width: 2; }
+
+  /* Segmented control */
+  .seg { display: flex; background: #e9e9ee; border-radius: 14px; padding: 3px; margin-bottom: 14px; }
+  .seg button {
+    flex: 1; border: none; background: transparent; font-size: 17px; font-weight: 500;
+    padding: 9px 0; border-radius: 11px; cursor: pointer; color: #111; font-family: inherit;
+  }
+  .seg button.on { background: #22b14c; color: #fff; font-weight: 700; }
+
+  /* Cards */
+  .card { background: #e9f8ef; border-radius: 22px; padding: 20px; margin-bottom: 14px; }
+  .card.plain { background: #ececf1; }
+
+  /* Chart */
+  .chart { height: 190px; display: flex; align-items: stretch; gap: 6px; }
+  .bcol { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-width: 0; }
+  .bval { font-size: 13px; font-weight: 800; color: #22b14c; height: 18px; margin-bottom: 4px; white-space: nowrap; }
+  .bbar { width: 100%; max-width: 44px; background: #a9e5bd; border-radius: 9px 9px 4px 4px; min-height: 0; }
+  .bcol.cur .bbar { background: #22b14c; }
+  .blab { font-size: 13px; color: #8e8e93; margin-top: 6px; font-weight: 500; }
+  .bcol.cur .blab { color: #111; font-weight: 800; }
+  .baseline { height: 1px; background: #d1d1d6; margin-top: 2px; }
+
+  /* Stats grid */
+  .period-title { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 14px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 12px; }
+  .stat .v { font-size: 31px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; }
+  .stat .v .u { font-size: 16px; font-weight: 800; color: #22b14c; margin-left: 3px; letter-spacing: 0; }
+  .stat .l { font-size: 12px; color: #8e8e93; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; margin-top: 3px; }
+  .goalbar { height: 8px; background: #d7efe0; border-radius: 5px; margin-top: 18px; overflow: hidden; }
+  .goalbar > div { height: 100%; background: #22b14c; border-radius: 5px; }
+
+  /* Best day */
+  .best-date { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+  .best-tag { color: #22b14c; font-weight: 800; font-size: 15px; letter-spacing: 0.4px; margin: 2px 0 14px; text-transform: uppercase; }
+  .best-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* Section titles */
+  .section-title { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; margin: 22px 4px 10px; }
+
+  /* Log card */
+  .date-row { margin-bottom: 12px; }
+  .date-row input[type="date"] {
+    width: 100%; font-size: 17px; padding: 13px 14px; border: none; border-radius: 14px;
+    background: #fff; font-family: inherit; font-weight: 600;
+  }
   .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
   .quick button {
-    font-size: 22px; font-weight: 700; padding: 18px 0; border: none; border-radius: 14px;
-    background: #111; color: #fff; cursor: pointer;
+    font-size: 22px; font-weight: 800; padding: 18px 0; border: none; border-radius: 16px;
+    background: #22b14c; color: #fff; cursor: pointer; font-family: inherit;
   }
-  .quick button:active { transform: scale(.96); opacity: .85; }
+  .quick button:active { transform: scale(.95); opacity: .85; }
   .custom-row { display: flex; gap: 10px; }
   .custom-row input {
-    flex: 1; font-size: 20px; padding: 14px; border: 1px solid #ddd; border-radius: 14px;
-    text-align: center; font-family: inherit; background: #fff; min-width: 0;
+    flex: 1; font-size: 19px; padding: 14px; border: none; border-radius: 16px;
+    text-align: center; font-family: inherit; background: #fff; min-width: 0; font-weight: 600;
   }
   .custom-row button {
-    font-size: 17px; font-weight: 700; padding: 0 22px; border: none; border-radius: 14px;
-    background: #e8e8ec; color: #111; cursor: pointer;
+    font-size: 17px; font-weight: 800; padding: 0 24px; border: none; border-radius: 16px;
+    background: #111; color: #fff; cursor: pointer; font-family: inherit;
   }
-  .custom-row button:active { transform: scale(.96); }
-  .sets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .custom-row button:active { transform: scale(.95); }
+  .sets-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #6b8f76; margin: 16px 0 8px; }
+  .sets { display: flex; flex-wrap: wrap; gap: 8px; }
   .set-chip {
-    display: inline-flex; align-items: center; gap: 6px; background: #eef0f3; border-radius: 999px;
-    padding: 8px 8px 8px 14px; font-size: 16px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px; background: #fff; border-radius: 999px;
+    padding: 9px 9px 9px 15px; font-size: 17px; font-weight: 700;
   }
   .set-chip button {
-    border: none; background: #d5d8de; color: #333; border-radius: 999px; width: 24px; height: 24px;
-    font-size: 14px; line-height: 1; cursor: pointer;
+    border: none; background: #e9f8ef; color: #1a7f37; border-radius: 999px; width: 26px; height: 26px;
+    font-size: 15px; line-height: 1; cursor: pointer; font-weight: 700;
   }
-  .empty-note { color: #888; font-size: 14px; }
-  .day { border-bottom: 1px solid #eee; padding: 10px 2px; }
+  .empty-note { color: #8e8e93; font-size: 15px; }
+  .day-total { width: 100%; font-weight: 800; font-size: 17px; margin-top: 6px; }
+
+  /* History */
+  .hist-toggle {
+    display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800;
+    letter-spacing: -0.3px; margin: 22px 4px 10px; cursor: pointer; user-select: none; -webkit-user-select: none;
+  }
+  .hist-toggle .chev { color: #22b14c; font-size: 16px; }
+  .day { border-bottom: 1px solid #d7efe0; padding: 11px 2px; }
   .day:last-child { border-bottom: none; }
-  .day-head { display: flex; justify-content: space-between; align-items: center; font-size: 16px; cursor: pointer; padding: 4px 0; }
-  .day-head .d { font-weight: 600; }
-  .day-head .t { font-weight: 700; }
+  .day-head { display: flex; justify-content: space-between; align-items: center; font-size: 16px; cursor: pointer; padding: 2px 0; }
+  .day-head .d { font-weight: 700; }
+  .day-head .t { font-weight: 800; }
   .day-sets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
   .hidden { display: none; }
+
+  /* Goal + backup */
   .goal-row { display: flex; gap: 10px; align-items: center; }
   .goal-row input {
-    flex: 1; font-size: 18px; padding: 12px; border: 1px solid #ddd; border-radius: 12px;
-    font-family: inherit; background: #fff; min-width: 0;
+    flex: 1; font-size: 19px; padding: 13px 14px; border: none; border-radius: 14px;
+    font-family: inherit; background: #fff; min-width: 0; font-weight: 700;
   }
   .goal-row button {
-    font-size: 16px; font-weight: 700; padding: 12px 18px; border: none; border-radius: 12px;
-    background: #111; color: #fff; cursor: pointer;
+    font-size: 16px; font-weight: 800; padding: 13px 20px; border: none; border-radius: 14px;
+    background: #22b14c; color: #fff; cursor: pointer; font-family: inherit;
   }
   .backup-row { display: flex; gap: 10px; }
   .backup-row button, .backup-row label {
-    flex: 1; text-align: center; font-size: 15px; font-weight: 600; padding: 12px 0;
-    border: 1px solid #ddd; border-radius: 12px; background: #fff; cursor: pointer; font-family: inherit;
+    flex: 1; text-align: center; font-size: 16px; font-weight: 700; padding: 14px 0;
+    border: none; border-radius: 14px; background: #fff; cursor: pointer; font-family: inherit; color: #111;
   }
-  .backup-row button:active, .backup-row label:active { background: #eee; }
-  .danger { color: #c00; }
-  .foot { text-align: center; color: #999; font-size: 12px; margin-top: 24px; }
-  .weeks { display: flex; align-items: stretch; gap: 5px; height: 148px; }
-  .wcol { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-width: 0; }
-  .wtot { font-size: 9px; color: #666; font-weight: 700; margin-bottom: 3px; height: 12px; }
-  .wbar { width: 100%; max-width: 26px; background: #111; border-radius: 4px 4px 2px 2px; }
-  .wcol.cur .wbar { background: #1a7f37; }
-  .wlab { font-size: 9px; color: #999; margin-top: 4px; white-space: nowrap; }
+  .backup-row button:active, .backup-row label:active { transform: scale(.97); }
+  .danger { color: #c00 !important; }
+  .foot { text-align: center; color: #aeaeb2; font-size: 13px; margin-top: 26px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>💪 Push-Ups</h1>
-  <div class="sub" id="yearLabel"></div>
 
-  <div class="card">
-    <div class="big-total" id="yearTotal">0</div>
-    <div class="goal-line" id="goalLine"></div>
-    <div class="bar"><div id="goalBar" style="width:0%"></div></div>
+  <div class="topbar">
+    <h1>Push-Ups</h1>
+    <button class="iconbtn" id="shareBtn" aria-label="Export backup">
+      <svg viewBox="0 0 24 24"><path d="M12 3v13m0-13L7 8m5-5l5 5M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"/></svg>
+    </button>
   </div>
 
-  <div class="stats">
-    <div class="stat"><div class="v" id="dailyAvg">0</div><div class="l">Daily avg</div></div>
-    <div class="stat"><div class="v" id="neededPerDay">0</div><div class="l">Needed / day</div></div>
-    <div class="stat"><div class="v" id="daysLeft">0</div><div class="l">Days left</div></div>
+  <div class="seg" id="seg">
+    <button data-p="week">Week</button>
+    <button data-p="month">Month</button>
+    <button data-p="year" class="on">Year</button>
+  </div>
+
+  <div class="card">
+    <div class="chart" id="chart"></div>
+    <div class="baseline"></div>
+  </div>
+
+  <div class="card">
+    <div class="period-title" id="periodTitle"></div>
+    <div class="grid" id="statGrid"></div>
+    <div class="goalbar" id="goalBarWrap"><div id="goalBar" style="width:0%"></div></div>
+  </div>
+
+  <div class="card" id="bestCard">
+    <div class="best-date" id="bestDate"></div>
+    <div class="best-tag">Best day</div>
+    <div class="best-cols">
+      <div class="stat"><div class="v" id="bestTotal">–</div><div class="l">Push-ups</div></div>
+      <div class="stat"><div class="v" id="bestSets">–</div><div class="l">Sets</div></div>
+      <div class="stat"><div class="v" id="bestSingle">–</div><div class="l">Best set</div></div>
+    </div>
   </div>
 
   <div class="section-title">Log reps</div>
   <div class="card">
-    <div class="date-row">
-      <input type="date" id="datePicker">
-    </div>
-    <div class="quick" id="quickBtns">
-      <button data-reps="25">25</button>
-      <button data-reps="40">40</button>
-      <button data-reps="50">50</button>
-      <button data-reps="60">60</button>
-    </div>
+    <div class="date-row"><input type="date" id="datePicker"></div>
+    <div class="quick" id="quickBtns"></div>
     <div class="custom-row">
       <input type="number" id="customReps" inputmode="numeric" min="1" placeholder="Custom reps">
       <button id="customAdd">Add</button>
     </div>
-    <div class="section-title" style="margin-top:16px" id="setsTitle">Today's sets</div>
+    <div class="sets-label" id="setsTitle">Today's sets</div>
     <div class="sets" id="setsList"></div>
   </div>
 
-  <div class="section-title">Bests</div>
-  <div class="card">
-    <div class="best-row"><span class="k">Best single set</span><span class="val" id="bestSet">–</span></div>
-    <div class="best-row"><span class="k">Best day</span><span class="val" id="bestDay">–</span></div>
-    <div class="best-row"><span class="k">Current streak</span><span class="val" id="streak">–</span></div>
-  </div>
-
-  <div class="section-title">Last 12 days</div>
-  <div class="card"><div class="weeks" id="dayChart"></div></div>
-
-  <div class="section-title toggle" id="historyToggle"><span class="chev" id="historyChev">▸</span>History <span id="historyCount"></span></div>
-  <div class="card hidden" id="historyCard"><div class="empty-note">No entries yet.</div></div>
+  <div class="hist-toggle" id="historyToggle"><span class="chev" id="historyChev">▸</span>History <span id="historyCount"></span></div>
+  <div class="card hidden" id="historyCard"></div>
 
   <div class="section-title">Goal</div>
   <div class="card">
@@ -157,14 +203,13 @@
   </div>
 
   <div class="section-title">Backup</div>
-  <div class="card">
+  <div class="card plain">
     <div class="backup-row">
       <button id="exportBtn">Export</button>
       <label for="importFile">Import</label>
       <input type="file" id="importFile" accept="application/json" class="hidden">
     </div>
-    <div class="section-title" style="margin-top:16px">Danger zone</div>
-    <div class="backup-row">
+    <div class="backup-row" style="margin-top:10px">
       <button id="resetBtn" class="danger">Delete all data</button>
     </div>
   </div>
@@ -176,30 +221,25 @@
 (function () {
   "use strict";
   var KEY = "pushup-tracker-v1";
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-  function todayStr() {
-    var d = new Date();
-    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
-  }
   function pad(n) { return (n < 10 ? "0" : "") + n; }
-  function parseDay(s) {
-    var p = s.split("-");
-    return new Date(+p[0], +p[1] - 1, +p[2]);
+  function dateKey(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function todayStr() { return dateKey(new Date()); }
+  function parseDay(s) { var p = s.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function fmt(n) { return Math.round(n).toLocaleString("en-US"); }
+  function compact(n) {
+    n = Math.round(n);
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+    return "" + n;
   }
-  function fmtDay(s) {
+  function fmtLong(s) {
     var d = parseDay(s);
-    return (d.getMonth() + 1) + "/" + d.getDate();
+    return MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
   }
-  function dayOfYear(d) {
-    var start = new Date(d.getFullYear(), 0, 0);
-    return Math.floor((d - start) / 86400000);
-  }
-  function daysInYear(y) {
-    return ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) ? 366 : 365;
-  }
-  function fmt(n) {
-    return Math.round(n).toLocaleString("en-US");
-  }
+  function daysInYear(y) { return ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) ? 366 : 365; }
+  function dayOfYear(d) { return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000); }
 
   function load() {
     try {
@@ -213,73 +253,194 @@
     } catch (e) {}
     return { goal: 50000, days: {} };
   }
-  function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
-  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
   var state = load();
   var selectedDate = todayStr();
-
+  var period = "year";
+  var historyOpen = false;
   var $ = function (id) { return document.getElementById(id); };
 
-  function yearTotal() {
-    var y = new Date().getFullYear() + "-";
-    var t = 0;
-    for (var k in state.days) {
-      if (k.indexOf(y) === 0) {
-        var arr = state.days[k];
-        for (var i = 0; i < arr.length; i++) t += arr[i];
-      }
-    }
-    return t;
+  function daySum(k) {
+    var arr = state.days[k] || [], s = 0;
+    for (var i = 0; i < arr.length; i++) s += arr[i];
+    return s;
+  }
+  function daySets(k) { return (state.days[k] || []).length; }
+  function dayBest(k) {
+    var arr = state.days[k] || [], m = 0;
+    for (var i = 0; i < arr.length; i++) if (arr[i] > m) m = arr[i];
+    return m;
   }
 
-  function render() {
-    var now = new Date();
-    var yr = now.getFullYear();
-    var doy = dayOfYear(now);
-    var diy = daysInYear(yr);
-    var left = diy - doy;
-    var total = yearTotal();
-    var avg = doy > 0 ? total / doy : 0;
-    var need = left > 0 ? Math.max(0, (state.goal - total) / left) : 0;
+  /* ---------- Trends ---------- */
+  function periodDays(p) {
+    var now = new Date(); now.setHours(0, 0, 0, 0);
+    var out = [];
+    if (p === "week") {
+      for (var n = 6; n >= 0; n--) { var d = new Date(now); d.setDate(d.getDate() - n); out.push(d); }
+    } else if (p === "month") {
+      var y = now.getFullYear(), m = now.getMonth();
+      var dim = new Date(y, m + 1, 0).getDate();
+      for (var i = 1; i <= dim; i++) out.push(new Date(y, m, i));
+    } else {
+      var yy = now.getFullYear();
+      var diy = daysInYear(yy);
+      for (var j = 1; j <= diy; j++) out.push(new Date(yy, 0, j));
+    }
+    return out;
+  }
 
-    $("yearLabel").textContent = yr + " · day " + doy + " of " + diy;
-    $("yearTotal").textContent = fmt(total);
-    $("goalLine").textContent = "Goal: " + fmt(state.goal) + (total >= state.goal ? " — goal met! 🎉" : " · " + fmt(state.goal - total) + " to go");
-    $("goalBar").style.width = Math.min(100, (total / state.goal) * 100) + "%";
-    $("dailyAvg").textContent = avg.toFixed(1);
-    var needEl = $("neededPerDay");
-    needEl.textContent = need.toFixed(1);
-    needEl.className = "v" + (total >= state.goal ? " good" : "");
-    $("daysLeft").textContent = left;
+  function renderTrends() {
+    var now = new Date(); now.setHours(0, 0, 0, 0);
+    var title, bars, barLabel, elapsed;
 
-    var bestSet = 0, bestSetDay = "", bestDay = 0, bestDayDay = "";
-    var bkeys = Object.keys(state.days).filter(function (k) { return k.indexOf(yr + "-") === 0 && state.days[k].length; }).sort();
-    bkeys.forEach(function (k) {
-      var arr = state.days[k];
-      var s = 0;
-      for (var i = 0; i < arr.length; i++) {
-        s += arr[i];
-        if (arr[i] > bestSet) { bestSet = arr[i]; bestSetDay = k; }
+    if (period === "week") {
+      var start = new Date(now); start.setDate(start.getDate() - 6);
+      title = MONTHS[start.getMonth()].slice(0, 3) + " " + start.getDate() + " – " + MONTHS[now.getMonth()].slice(0, 3) + " " + now.getDate();
+      var dl = ["S", "M", "T", "W", "T", "F", "S"];
+      bars = periodDays("week").map(function (d, i) {
+        return { label: dl[d.getDay()], value: daySum(dateKey(d)), cur: i === 6 };
+      });
+      elapsed = 7;
+    } else if (period === "month") {
+      title = MONTHS[now.getMonth()];
+      var y = now.getFullYear(), m = now.getMonth();
+      var dim = new Date(y, m + 1, 0).getDate();
+      bars = [];
+      for (var i = 0; i < 12; i++) {
+        var tot = 0;
+        for (var dd = 1; dd <= (i === m ? dim : new Date(y, i + 1, 0).getDate()); dd++) {
+          if (i > m) break;
+          tot += daySum(y + "-" + pad(i + 1) + "-" + pad(dd));
+        }
+        bars.push({ label: MONTHS[i].charAt(0), value: tot, cur: i === m });
       }
-      if (s > bestDay) { bestDay = s; bestDayDay = k; }
+      elapsed = now.getDate();
+    } else {
+      title = "" + now.getFullYear();
+      var years = {};
+      Object.keys(state.days).forEach(function (k) { years[k.slice(0, 4)] = true; });
+      years[now.getFullYear()] = true;
+      var ylist = Object.keys(years).sort();
+      bars = ylist.map(function (yy) {
+        var tot = 0;
+        Object.keys(state.days).forEach(function (k) {
+          if (k.indexOf(yy + "-") === 0) tot += daySum(k);
+        });
+        return { label: yy, value: tot, cur: +yy === now.getFullYear() };
+      });
+      elapsed = dayOfYear(now);
+    }
+
+    // Chart
+    var max = 0;
+    bars.forEach(function (b) { if (b.value > max) max = b.value; });
+    var ch = $("chart"); ch.innerHTML = "";
+    bars.forEach(function (b) {
+      var col = document.createElement("div");
+      col.className = "bcol" + (b.cur ? " cur" : "");
+      var v = document.createElement("div"); v.className = "bval";
+      v.textContent = b.cur && b.value > 0 ? compact(b.value) : "";
+      var bar = document.createElement("div"); bar.className = "bbar";
+      bar.style.height = max > 0 && b.value > 0 ? Math.max(3, (b.value / max) * 100) + "%" : "0";
+      var lab = document.createElement("div"); lab.className = "blab"; lab.textContent = b.label;
+      col.appendChild(v); col.appendChild(bar); col.appendChild(lab);
+      ch.appendChild(col);
     });
-    $("bestSet").innerHTML = bestSet > 0 ? fmt(bestSet) + " <small>" + fmtDay(bestSetDay) + "</small>" : "–";
-    $("bestDay").innerHTML = bestDay > 0 ? fmt(bestDay) + " <small>" + fmtDay(bestDayDay) + "</small>" : "–";
 
-    var sd = new Date(); sd.setHours(0, 0, 0, 0);
-    if (!daySum(dateKey(sd))) sd.setDate(sd.getDate() - 1);
-    var streak = 0;
-    while (daySum(dateKey(sd)) > 0) { streak++; sd.setDate(sd.getDate() - 1); }
-    $("streak").textContent = streak > 0 ? streak + (streak === 1 ? " day" : " days") : "–";
+    // Aggregate stats over the period's days
+    var days = periodDays(period);
+    var total = 0, sets = 0, trained = 0, bestDay = 0, bestDayKey = "", bestSet = 0;
+    days.forEach(function (d) {
+      var k = dateKey(d);
+      var s = daySum(k);
+      total += s;
+      sets += daySets(k);
+      if (s > 0) trained++;
+      if (s > bestDay) { bestDay = s; bestDayKey = k; }
+      var bs = dayBest(k);
+      if (bs > bestSet) bestSet = bs;
+    });
+    var avg = elapsed > 0 ? total / elapsed : 0;
 
-    renderDays();
-    renderQuick();
+    $("periodTitle").textContent = title;
+    var g = $("statGrid"); g.innerHTML = "";
+    var stats;
+    if (period === "year") {
+      var diy = daysInYear(now.getFullYear());
+      var left = diy - elapsed;
+      stats = [
+        [fmt(total), "", "Total push-ups"],
+        [avg.toFixed(1), "", "Average / day"],
+        [fmt(sets), "", "Total sets"],
+        [fmt(trained), "", "Days trained"],
+        [fmt(bestSet), "", "Best set"],
+        [fmt(bestDay), "", "Best day"],
+        [Math.round((total / state.goal) * 100), "%", "Of goal"],
+        [total >= state.goal ? "Done" : fmt(state.goal - total), total >= state.goal ? "" : "", "To go"]
+      ];
+      $("goalBar").style.width = Math.min(100, (total / state.goal) * 100) + "%";
+      $("goalBarWrap").style.display = "";
+    } else if (period === "month") {
+      var dim2 = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      stats = [
+        [fmt(total), "", "Total push-ups"],
+        [avg.toFixed(1), "", "Average / day"],
+        [fmt(sets), "", "Total sets"],
+        [fmt(trained), "", "Days trained"],
+        [fmt(bestDay), "", "Best day"],
+        [fmt(bestSet), "", "Best set"],
+        [fmt(dim2 - elapsed), "", "Days left"],
+        [fmt(total + avg * (dim2 - elapsed)), "", "Projected"]
+      ];
+      $("goalBarWrap").style.display = "none";
+    } else {
+      var sd = new Date(now);
+      if (!daySum(dateKey(sd))) sd.setDate(sd.getDate() - 1);
+      var streak = 0;
+      while (daySum(dateKey(sd)) > 0) { streak++; sd.setDate(sd.getDate() - 1); }
+      var dailyGoal = state.goal / daysInYear(now.getFullYear());
+      var above = 0;
+      days.forEach(function (d) { if (daySum(dateKey(d)) >= dailyGoal) above++; });
+      stats = [
+        [fmt(total), "", "Total push-ups"],
+        [avg.toFixed(1), "", "Average / day"],
+        [fmt(sets), "", "Total sets"],
+        [fmt(trained), "", "Days trained"],
+        [fmt(bestDay), "", "Best day"],
+        [fmt(bestSet), "", "Best set"],
+        [streak > 0 ? streak : "–", streak > 0 ? "days" : "", "Streak"],
+        [fmt(above), "days", "Above daily goal"]
+      ];
+      $("goalBarWrap").style.display = "none";
+    }
+    stats.forEach(function (s) {
+      var el = document.createElement("div"); el.className = "stat";
+      var v = document.createElement("div"); v.className = "v"; v.textContent = s[0];
+      if (s[1]) { var u = document.createElement("span"); u.className = "u"; u.textContent = s[1]; v.appendChild(u); }
+      var l = document.createElement("div"); l.className = "l"; l.textContent = s[2];
+      el.appendChild(v); el.appendChild(l);
+      g.appendChild(el);
+    });
 
+    // Best day card
+    if (bestDayKey) {
+      $("bestCard").style.display = "";
+      $("bestDate").textContent = fmtLong(bestDayKey);
+      $("bestTotal").textContent = fmt(bestDay);
+      $("bestSets").textContent = fmt(daySets(bestDayKey));
+      $("bestSingle").textContent = fmt(dayBest(bestDayKey));
+    } else {
+      $("bestCard").style.display = "none";
+    }
+  }
+
+  /* ---------- Logging ---------- */
+  function renderLog() {
     $("goalInput").value = state.goal;
     $("datePicker").value = selectedDate;
-    $("setsTitle").textContent = (selectedDate === todayStr() ? "Today's" : fmtDay(selectedDate) + "'s") + " sets";
+    $("setsTitle").textContent = (selectedDate === todayStr() ? "Today's" : fmtLong(selectedDate) + "'s") + " sets";
 
     var sets = state.days[selectedDate] || [];
     var list = $("setsList");
@@ -304,115 +465,11 @@
         list.appendChild(chip);
       });
       var tot = document.createElement("div");
-      tot.style.cssText = "width:100%;font-weight:700;margin-top:4px;";
+      tot.className = "day-total";
       tot.textContent = "Day total: " + fmt(sum);
       list.appendChild(tot);
     }
-
-    renderHistory();
-    renderHistoryToggle();
-  }
-
-  function daySum(k) {
-    var arr = state.days[k] || [];
-    var s = 0;
-    for (var i = 0; i < arr.length; i++) s += arr[i];
-    return s;
-  }
-  function dateKey(d) {
-    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
-  }
-
-  function renderDays() {
-    var el = $("dayChart");
-    el.innerHTML = "";
-    var now = new Date(); now.setHours(0, 0, 0, 0);
-    var days = [];
-    for (var n = 11; n >= 0; n--) {
-      var dd = new Date(now);
-      dd.setDate(dd.getDate() - n);
-      days.push({ label: (dd.getMonth() + 1) + "/" + dd.getDate(), total: daySum(dateKey(dd)), cur: n === 0 });
-    }
-    var max = 0;
-    days.forEach(function (x) { if (x.total > max) max = x.total; });
-    days.forEach(function (x) {
-      var col = document.createElement("div");
-      col.className = "wcol" + (x.cur ? " cur" : "");
-      var tv = document.createElement("div");
-      tv.className = "wtot";
-      tv.textContent = x.total > 0 ? fmt(x.total) : "";
-      var bar = document.createElement("div");
-      bar.className = "wbar";
-      bar.style.height = max > 0 ? Math.max(4, (x.total / max) * 100) + "%" : "0";
-      bar.title = x.label + ": " + fmt(x.total) + " reps";
-      var lab = document.createElement("div");
-      lab.className = "wlab";
-      lab.textContent = x.label;
-      col.appendChild(tv); col.appendChild(bar); col.appendChild(lab);
-      el.appendChild(col);
-    });
-  }
-
-  function renderHistory() {
-    var card = $("historyCard");
-    card.innerHTML = "";
-    var keys = Object.keys(state.days).filter(function (k) { return state.days[k].length; }).sort().reverse();
-    if (!keys.length) {
-      var n = document.createElement("div");
-      n.className = "empty-note";
-      n.textContent = "No entries yet.";
-      card.appendChild(n);
-      return;
-    }
-    keys.forEach(function (k) {
-      var arr = state.days[k];
-      var sum = arr.reduce(function (a, b) { return a + b; }, 0);
-      var day = document.createElement("div");
-      day.className = "day";
-      var head = document.createElement("div");
-      head.className = "day-head";
-      var dl = document.createElement("span");
-      dl.className = "d";
-      dl.textContent = fmtDay(k) + (k === todayStr() ? " (today)" : "");
-      var dr = document.createElement("span");
-      dr.className = "t";
-      dr.textContent = arr.join("+") + "=" + fmt(sum);
-      head.appendChild(dl); head.appendChild(dr);
-      var body = document.createElement("div");
-      body.className = "day-sets hidden";
-      arr.forEach(function (r, i) {
-        var chip = document.createElement("span");
-        chip.className = "set-chip";
-        chip.appendChild(document.createTextNode(r + " "));
-        var x = document.createElement("button");
-        x.textContent = "×";
-        x.setAttribute("aria-label", "Remove set of " + r + " on " + fmtDay(k));
-        x.onclick = function (e) { e.stopPropagation(); removeSetAt(k, i); };
-        chip.appendChild(x);
-        body.appendChild(chip);
-      });
-      head.onclick = function () { body.classList.toggle("hidden"); };
-      day.appendChild(head); day.appendChild(body);
-      card.appendChild(day);
-    });
-  }
-
-  function addReps(n) {
-    n = Math.floor(+n);
-    if (!(n > 0)) return;
-    if (!state.days[selectedDate]) state.days[selectedDate] = [];
-    state.days[selectedDate].push(n);
-    save(); render();
-  }
-  function removeSet(i) {
-    var arr = state.days[selectedDate];
-    if (arr) { arr.splice(i, 1); if (!arr.length) delete state.days[selectedDate]; }
-    save(); render();
-  }
-  function removeSetAt(k, i) {
-    var arr = state.days[k];
-    if (arr) { arr.splice(i, 1); if (!arr.length) delete state.days[k]; }
-    save(); render();
+    renderQuick();
   }
 
   function renderQuick() {
@@ -438,6 +495,95 @@
     });
   }
 
+  function renderHistory() {
+    var card = $("historyCard");
+    card.innerHTML = "";
+    var keys = Object.keys(state.days).filter(function (k) { return state.days[k].length; }).sort().reverse();
+    if (!keys.length) {
+      var n = document.createElement("div");
+      n.className = "empty-note";
+      n.textContent = "No entries yet.";
+      card.appendChild(n);
+      return;
+    }
+    keys.forEach(function (k) {
+      var arr = state.days[k];
+      var sum = arr.reduce(function (a, b) { return a + b; }, 0);
+      var day = document.createElement("div");
+      day.className = "day";
+      var head = document.createElement("div");
+      head.className = "day-head";
+      var dl = document.createElement("span");
+      dl.className = "d";
+      dl.textContent = fmtLong(k) + (k === todayStr() ? " (today)" : "");
+      var dr = document.createElement("span");
+      dr.className = "t";
+      dr.textContent = fmt(sum);
+      head.appendChild(dl); head.appendChild(dr);
+      var body = document.createElement("div");
+      body.className = "day-sets hidden";
+      arr.forEach(function (r, i) {
+        var chip = document.createElement("span");
+        chip.className = "set-chip";
+        chip.appendChild(document.createTextNode(r + " "));
+        var x = document.createElement("button");
+        x.textContent = "×";
+        x.setAttribute("aria-label", "Remove set of " + r + " on " + fmtLong(k));
+        x.onclick = function (e) { e.stopPropagation(); removeSetAt(k, i); };
+        chip.appendChild(x);
+        body.appendChild(chip);
+      });
+      head.onclick = function () { body.classList.toggle("hidden"); };
+      day.appendChild(head); day.appendChild(body);
+      card.appendChild(day);
+    });
+  }
+
+  function renderHistoryToggle() {
+    var n = Object.keys(state.days).filter(function (k) { return state.days[k].length; }).length;
+    $("historyCount").textContent = n ? "(" + n + ")" : "";
+    $("historyChev").textContent = historyOpen ? "▾" : "▸";
+    $("historyCard").classList.toggle("hidden", !historyOpen);
+  }
+
+  function addReps(n) {
+    n = Math.floor(+n);
+    if (!(n > 0)) return;
+    if (!state.days[selectedDate]) state.days[selectedDate] = [];
+    state.days[selectedDate].push(n);
+    save(); render();
+  }
+  function removeSet(i) {
+    var arr = state.days[selectedDate];
+    if (arr) { arr.splice(i, 1); if (!arr.length) delete state.days[selectedDate]; }
+    save(); render();
+  }
+  function removeSetAt(k, i) {
+    var arr = state.days[k];
+    if (arr) { arr.splice(i, 1); if (!arr.length) delete state.days[k]; }
+    save(); render();
+  }
+
+  function render() {
+    renderTrends();
+    renderLog();
+    renderHistory();
+    renderHistoryToggle();
+  }
+
+  /* ---------- Events ---------- */
+  var segBtns = $("seg").querySelectorAll("button");
+  for (var si = 0; si < segBtns.length; si++) {
+    (function (b) {
+      b.addEventListener("click", function () {
+        for (var j = 0; j < segBtns.length; j++) segBtns[j].classList.remove("on");
+        b.classList.add("on");
+        period = b.getAttribute("data-p");
+        renderTrends();
+      });
+    })(segBtns[si]);
+  }
+
   $("customAdd").addEventListener("click", function () {
     addReps($("customReps").value);
     $("customReps").value = "";
@@ -452,26 +598,21 @@
     var g = Math.floor(+$("goalInput").value);
     if (g > 0) { state.goal = g; save(); render(); }
   });
-  var historyOpen = false;
-  function renderHistoryToggle() {
-    var n = Object.keys(state.days).filter(function (k) { return state.days[k].length; }).length;
-    $("historyCount").textContent = n ? "(" + n + ")" : "";
-    $("historyChev").textContent = historyOpen ? "▾" : "▸";
-    $("historyCard").classList.toggle("hidden", !historyOpen);
-  }
   $("historyToggle").addEventListener("click", function () {
     historyOpen = !historyOpen;
     renderHistoryToggle();
   });
 
-  $("exportBtn").addEventListener("click", function () {
+  function doExport() {
     var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "pushup-backup-" + todayStr() + ".json";
     document.body.appendChild(a); a.click();
     setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 500);
-  });
+  }
+  $("exportBtn").addEventListener("click", doExport);
+  $("shareBtn").addEventListener("click", doExport);
   $("importFile").addEventListener("change", function () {
     var f = $("importFile").files[0];
     if (!f) return;
