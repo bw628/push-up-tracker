@@ -30,7 +30,8 @@
   .stat .v { font-size: 20px; font-weight: 700; }
   .stat .l { font-size: 11px; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: .4px; }
   .stat .v.good { color: #1a7f37; }
-  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: #666; margin: 20px 4px 8px; }
+  .section-title.toggle { cursor: pointer; user-select: none; -webkit-user-select: none; }
+  .section-title.toggle .chev { display: inline-block; margin-right: 6px; color: #999; }
   .date-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .date-row input[type="date"] { flex: 1; font-size: 17px; padding: 12px; border: 1px solid #ddd; border-radius: 12px; background: #fff; font-family: inherit; }
   .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
@@ -121,8 +122,8 @@
     <div class="sets" id="setsList"></div>
   </div>
 
-  <div class="section-title">History</div>
-  <div class="card" id="historyCard"><div class="empty-note">No entries yet.</div></div>
+  <div class="section-title toggle" id="historyToggle"><span class="chev" id="historyChev">▸</span>History <span id="historyCount"></span></div>
+  <div class="card hidden" id="historyCard"><div class="empty-note">No entries yet.</div></div>
 
   <div class="section-title">Goal</div>
   <div class="card">
@@ -263,6 +264,7 @@
     }
 
     renderHistory();
+    renderHistoryToggle();
   }
 
   function renderHistory() {
@@ -343,6 +345,17 @@
   $("goalSave").addEventListener("click", function () {
     var g = Math.floor(+$("goalInput").value);
     if (g > 0) { state.goal = g; save(); render(); }
+  });
+  var historyOpen = false;
+  function renderHistoryToggle() {
+    var n = Object.keys(state.days).filter(function (k) { return state.days[k].length; }).length;
+    $("historyCount").textContent = n ? "(" + n + ")" : "";
+    $("historyChev").textContent = historyOpen ? "▾" : "▸";
+    $("historyCard").classList.toggle("hidden", !historyOpen);
+  }
+  $("historyToggle").addEventListener("click", function () {
+    historyOpen = !historyOpen;
+    renderHistoryToggle();
   });
 
   $("exportBtn").addEventListener("click", function () {
