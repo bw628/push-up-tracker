@@ -30,8 +30,11 @@
   .stat .v { font-size: 20px; font-weight: 700; }
   .stat .l { font-size: 11px; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: .4px; }
   .stat .v.good { color: #1a7f37; }
-  .section-title.toggle { cursor: pointer; user-select: none; -webkit-user-select: none; }
-  .section-title.toggle .chev { display: inline-block; margin-right: 6px; color: #999; }
+  .best-row { display: flex; justify-content: space-between; align-items: center; font-size: 16px; padding: 8px 2px; }
+  .best-row + .best-row { border-top: 1px solid #eee; }
+  .best-row .k { color: #666; }
+  .best-row .val { font-weight: 700; }
+  .best-row .val small { font-weight: 400; color: #999; }
   .date-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .date-row input[type="date"] { flex: 1; font-size: 17px; padding: 12px; border: 1px solid #ddd; border-radius: 12px; background: #fff; font-family: inherit; }
   .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
@@ -120,6 +123,12 @@
     </div>
     <div class="section-title" style="margin-top:16px" id="setsTitle">Today's sets</div>
     <div class="sets" id="setsList"></div>
+  </div>
+
+  <div class="section-title">Bests</div>
+  <div class="card">
+    <div class="best-row"><span class="k">Best single set</span><span class="val" id="bestSet">–</span></div>
+    <div class="best-row"><span class="k">Best day</span><span class="val" id="bestDay">–</span></div>
   </div>
 
   <div class="section-title toggle" id="historyToggle"><span class="chev" id="historyChev">▸</span>History <span id="historyCount"></span></div>
@@ -230,6 +239,20 @@
     needEl.textContent = need.toFixed(1);
     needEl.className = "v" + (total >= state.goal ? " good" : "");
     $("daysLeft").textContent = left;
+
+    var bestSet = 0, bestSetDay = "", bestDay = 0, bestDayDay = "";
+    var bkeys = Object.keys(state.days).filter(function (k) { return k.indexOf(yr + "-") === 0 && state.days[k].length; }).sort();
+    bkeys.forEach(function (k) {
+      var arr = state.days[k];
+      var s = 0;
+      for (var i = 0; i < arr.length; i++) {
+        s += arr[i];
+        if (arr[i] > bestSet) { bestSet = arr[i]; bestSetDay = k; }
+      }
+      if (s > bestDay) { bestDay = s; bestDayDay = k; }
+    });
+    $("bestSet").innerHTML = bestSet > 0 ? fmt(bestSet) + " <small>" + fmtDay(bestSetDay) + "</small>" : "–";
+    $("bestDay").innerHTML = bestDay > 0 ? fmt(bestDay) + " <small>" + fmtDay(bestDayDay) + "</small>" : "–";
 
     $("goalInput").value = state.goal;
     $("datePicker").value = selectedDate;
