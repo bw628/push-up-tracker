@@ -117,7 +117,7 @@
     <div class="date-row">
       <input type="date" id="datePicker">
     </div>
-    <div class="quick">
+    <div class="quick" id="quickBtns">
       <button data-reps="25">25</button>
       <button data-reps="40">40</button>
       <button data-reps="50">50</button>
@@ -271,6 +271,7 @@
     $("streak").textContent = streak > 0 ? streak + (streak === 1 ? " day" : " days") : "–";
 
     renderDays();
+    renderQuick();
 
     $("goalInput").value = state.goal;
     $("datePicker").value = selectedDate;
@@ -410,9 +411,29 @@
     save(); render();
   }
 
-  document.querySelectorAll(".quick button").forEach(function (b) {
-    b.addEventListener("click", function () { addReps(b.getAttribute("data-reps")); });
-  });
+  function renderQuick() {
+    var el = $("quickBtns");
+    el.innerHTML = "";
+    var seen = {}, vals = [];
+    var keys = Object.keys(state.days).sort().reverse();
+    for (var ki = 0; ki < keys.length && vals.length < 4; ki++) {
+      var arr = state.days[keys[ki]];
+      for (var i = arr.length - 1; i >= 0 && vals.length < 4; i--) {
+        if (!seen[arr[i]]) { seen[arr[i]] = true; vals.push(arr[i]); }
+      }
+    }
+    [25, 40, 50, 60].forEach(function (d) {
+      if (vals.length < 4 && vals.indexOf(d) === -1) vals.push(d);
+    });
+    vals.sort(function (a, b) { return a - b; });
+    vals.forEach(function (v) {
+      var b = document.createElement("button");
+      b.textContent = v;
+      b.addEventListener("click", function () { addReps(v); });
+      el.appendChild(b);
+    });
+  }
+
   $("customAdd").addEventListener("click", function () {
     addReps($("customReps").value);
     $("customReps").value = "";
