@@ -128,9 +128,17 @@
   .empty-note { color: #8e8e93; font-size: 15px; }
   .day-total { width: 100%; font-weight: 800; font-size: 17px; margin-top: 6px; }
 
+  /* Goal progress (logger screen) */
+  .prog-head { display: flex; justify-content: space-between; align-items: baseline; font-weight: 800; font-size: 17px; margin-bottom: 10px; }
+  .prog-head #progPct { color: #22b14c; font-size: 20px; }
+  .pbar { height: 8px; background: #f0f0f4; border-radius: 5px; overflow: hidden; margin-bottom: 14px; }
+  .pbar > div { height: 100%; background: #22b14c; border-radius: 5px; }
+  .prog-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; }
+  .prog-grid .pv { font-size: 19px; font-weight: 800; letter-spacing: -0.3px; }
+  .prog-grid .pl { font-size: 11px; color: #8e8e93; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; }
+
   /* History */
-  .hist-toggle {
-    display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800;
+  .hist-toggle {    display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800;
     letter-spacing: -0.3px; margin: 22px 4px 10px; cursor: pointer; user-select: none; -webkit-user-select: none;
   }
   .hist-toggle .chev { color: #007aff; font-size: 16px; }
@@ -187,6 +195,17 @@
       </div>
       <div class="sets-label" id="setsTitle">Today's sets</div>
       <div class="sets" id="setsList"></div>
+    </div>
+
+    <div class="logcard">
+      <div class="prog-head"><span id="progTitle"></span><span id="progPct"></span></div>
+      <div class="pbar"><div id="progFill"></div></div>
+      <div class="prog-grid">
+        <div><div class="pv" id="progTotal">–</div><div class="pl">Total</div></div>
+        <div><div class="pv" id="progAvg">–</div><div class="pl">Daily avg</div></div>
+        <div><div class="pv" id="progNeed">–</div><div class="pl">Needed / day</div></div>
+        <div><div class="pv" id="progLeft">–</div><div class="pl">Days left</div></div>
+      </div>
     </div>
 
     <div class="hist-toggle" id="historyToggle"><span class="chev" id="historyChev">▸</span>History <span id="historyCount"></span></div>
@@ -285,7 +304,7 @@
   }
   function fmtShort(d) { return SMS[d.getMonth()] + " " + d.getDate(); }
   function daysInYear(y) { return ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) ? 366 : 365; }
-  function dayOfYear(d) { return Math.floor((d - new Date(d.getFullYear(), 0, 1)) / 86400000) + 1; }
+  function dayOfYear(d) { return Math.round((d - new Date(d.getFullYear(), 0, 1)) / 86400000) + 1; } // round: DST-safe
 
   function load() {
     try {
@@ -671,8 +690,32 @@
 
   function renderLog() {
     renderLogCard();
+    renderProgress();
     renderHistory();
     renderHistoryToggle();
+  }
+
+  function renderProgress() {
+    var now = new Date(); now.setHours(0, 0, 0, 0);
+    var y = now.getFullYear();
+    var prefix = y + "-";
+    var total = 0;
+    Object.keys(state.days).forEach(function (k) {
+      if (k.indexOf(prefix) === 0) total += daySum(k);
+    });
+    var doy = dayOfYear(now);
+    var diy = daysInYear(y);
+    var left = diy - doy;
+    var avg = doy > 0 ? total / doy : 0;
+    var rem = state.goal - total;
+    var need = rem > 0 && left > 0 ? rem / left : 0;
+    $("progTitle").textContent = y + " goal · " + fmt(state.goal);
+    $("progPct").textContent = Math.round((total / state.goal) * 100) + "%";
+    $("progFill").style.width = Math.min(100, (total / state.goal) * 100) + "%";
+    $("progTotal").textContent = fmt(total);
+    $("progAvg").textContent = avg.toFixed(1);
+    $("progNeed").textContent = rem <= 0 ? "Done" : need.toFixed(1);
+    $("progLeft").textContent = fmt(left);
   }
 
   function addReps(n) {
