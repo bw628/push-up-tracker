@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Push-Ups</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Push-Ups">
+<meta name="theme-color" content="#f5f5f7">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23111'/%3E%3Ctext x='90' y='118' font-size='84' text-anchor='middle' fill='%23fff' font-family='system-ui' font-weight='700'%3E💪%3C/text%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: #f5f5f7; color: #111; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 16px 16px 40px; }
+  h1 { font-size: 22px; margin: 8px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 16px; }
+  .card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .big-total { font-size: 44px; font-weight: 800; letter-spacing: -1px; }
+  .goal-line { color: #666; font-size: 14px; margin-top: 2px; }
+  .bar { height: 10px; background: #e8e8ec; border-radius: 6px; margin-top: 12px; overflow: hidden; }
+  .bar > div { height: 100%; background: #111; border-radius: 6px; transition: width .3s; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .stat { background: #fff; border-radius: 14px; padding: 12px 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .stat .v { font-size: 20px; font-weight: 700; }
+  .stat .l { font-size: 11px; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: .4px; }
+  .stat .v.good { color: #1a7f37; }
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: #666; margin: 20px 4px 8px; }
+  .date-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .date-row input[type="date"] { flex: 1; font-size: 17px; padding: 12px; border: 1px solid #ddd; border-radius: 12px; background: #fff; font-family: inherit; }
+  .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+  .quick button {
+    font-size: 22px; font-weight: 700; padding: 18px 0; border: none; border-radius: 14px;
+    background: #111; color: #fff; cursor: pointer;
+  }
+  .quick button:active { transform: scale(.96); opacity: .85; }
+  .custom-row { display: flex; gap: 10px; }
+  .custom-row input {
+    flex: 1; font-size: 20px; padding: 14px; border: 1px solid #ddd; border-radius: 14px;
+    text-align: center; font-family: inherit; background: #fff; min-width: 0;
+  }
+  .custom-row button {
+    font-size: 17px; font-weight: 700; padding: 0 22px; border: none; border-radius: 14px;
+    background: #e8e8ec; color: #111; cursor: pointer;
+  }
+  .custom-row button:active { transform: scale(.96); }
+  .sets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .set-chip {
+    display: inline-flex; align-items: center; gap: 6px; background: #eef0f3; border-radius: 999px;
+    padding: 8px 8px 8px 14px; font-size: 16px; font-weight: 600;
+  }
+  .set-chip button {
+    border: none; background: #d5d8de; color: #333; border-radius: 999px; width: 24px; height: 24px;
+    font-size: 14px; line-height: 1; cursor: pointer;
+  }
+  .empty-note { color: #888; font-size: 14px; }
+  .day { border-bottom: 1px solid #eee; padding: 10px 2px; }
+  .day:last-child { border-bottom: none; }
+  .day-head { display: flex; justify-content: space-between; align-items: center; font-size: 16px; cursor: pointer; padding: 4px 0; }
+  .day-head .d { font-weight: 600; }
+  .day-head .t { font-weight: 700; }
+  .day-sets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .hidden { display: none; }
+  .goal-row { display: flex; gap: 10px; align-items: center; }
+  .goal-row input {
+    flex: 1; font-size: 18px; padding: 12px; border: 1px solid #ddd; border-radius: 12px;
+    font-family: inherit; background: #fff; min-width: 0;
+  }
+  .goal-row button {
+    font-size: 16px; font-weight: 700; padding: 12px 18px; border: none; border-radius: 12px;
+    background: #111; color: #fff; cursor: pointer;
+  }
+  .backup-row { display: flex; gap: 10px; }
+  .backup-row button, .backup-row label {
+    flex: 1; text-align: center; font-size: 15px; font-weight: 600; padding: 12px 0;
+    border: 1px solid #ddd; border-radius: 12px; background: #fff; cursor: pointer; font-family: inherit;
+  }
+  .backup-row button:active, .backup-row label:active { background: #eee; }
+  .danger { color: #c00; }
+  .foot { text-align: center; color: #999; font-size: 12px; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>💪 Push-Ups</h1>
+  <div class="sub" id="yearLabel"></div>
+
+  <div class="card">
+    <div class="big-total" id="yearTotal">0</div>
+    <div class="goal-line" id="goalLine"></div>
+    <div class="bar"><div id="goalBar" style="width:0%"></div></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="v" id="dailyAvg">0</div><div class="l">Daily avg</div></div>
+    <div class="stat"><div class="v" id="neededPerDay">0</div><div class="l">Needed / day</div></div>
+    <div class="stat"><div class="v" id="daysLeft">0</div><div class="l">Days left</div></div>
+  </div>
+
+  <div class="section-title">Log reps</div>
+  <div class="card">
+    <div class="date-row">
+      <input type="date" id="datePicker">
+    </div>
+    <div class="quick">
+      <button data-reps="25">25</button>
+      <button data-reps="40">40</button>
+      <button data-reps="50">50</button>
+      <button data-reps="60">60</button>
+    </div>
+    <div class="custom-row">
+      <input type="number" id="customReps" inputmode="numeric" min="1" placeholder="Custom reps">
+      <button id="customAdd">Add</button>
+    </div>
+    <div class="section-title" style="margin-top:16px" id="setsTitle">Today's sets</div>
+    <div class="sets" id="setsList"></div>
+  </div>
+
+  <div class="section-title">History</div>
+  <div class="card" id="historyCard"><div class="empty-note">No entries yet.</div></div>
+
+  <div class="section-title">Goal</div>
+  <div class="card">
+    <div class="goal-row">
+      <input type="number" id="goalInput" inputmode="numeric" min="1">
+      <button id="goalSave">Save</button>
+    </div>
+  </div>
+
+  <div class="section-title">Backup</div>
+  <div class="card">
+    <div class="backup-row">
+      <button id="exportBtn">Export</button>
+      <label for="importFile">Import</label>
+      <input type="file" id="importFile" accept="application/json" class="hidden">
+    </div>
+    <div class="section-title" style="margin-top:16px">Danger zone</div>
+    <div class="backup-row">
+      <button id="resetBtn" class="danger">Delete all data</button>
+    </div>
+  </div>
+
+  <div class="foot">Data stays on this phone. Export a backup now and then.</div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var KEY = "pushup-tracker-v1";
+
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function parseDay(s) {
+    var p = s.split("-");
+    return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
+  function fmtDay(s) {
+    var d = parseDay(s);
+    return (d.getMonth() + 1) + "/" + d.getDate();
+  }
+  function dayOfYear(d) {
+    var start = new Date(d.getFullYear(), 0, 0);
+    return Math.floor((d - start) / 86400000);
+  }
+  function daysInYear(y) {
+    return ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) ? 366 : 365;
+  }
+  function fmt(n) {
+    return Math.round(n).toLocaleString("en-US");
+  }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        if (s && typeof s === "object") {
+          return { goal: +s.goal > 0 ? Math.floor(+s.goal) : 50000, days: s.days && typeof s.days === "object" ? s.days : {} };
+        }
+      }
+    } catch (e) {}
+    return { goal: 50000, days: {} };
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  var state = load();
+  var selectedDate = todayStr();
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function yearTotal() {
+    var y = new Date().getFullYear() + "-";
+    var t = 0;
+    for (var k in state.days) {
+      if (k.indexOf(y) === 0) {
+        var arr = state.days[k];
+        for (var i = 0; i < arr.length; i++) t += arr[i];
+      }
+    }
+    return t;
+  }
+
+  function render() {
+    var now = new Date();
+    var yr = now.getFullYear();
+    var doy = dayOfYear(now);
+    var diy = daysInYear(yr);
+    var left = diy - doy;
+    var total = yearTotal();
+    var avg = doy > 0 ? total / doy : 0;
+    var need = left > 0 ? Math.max(0, (state.goal - total) / left) : 0;
+
+    $("yearLabel").textContent = yr + " · day " + doy + " of " + diy;
+    $("yearTotal").textContent = fmt(total);
+    $("goalLine").textContent = "Goal: " + fmt(state.goal) + (total >= state.goal ? " — goal met! 🎉" : " · " + fmt(state.goal - total) + " to go");
+    $("goalBar").style.width = Math.min(100, (total / state.goal) * 100) + "%";
+    $("dailyAvg").textContent = avg.toFixed(1);
+    var needEl = $("neededPerDay");
+    needEl.textContent = need.toFixed(1);
+    needEl.className = "v" + (total >= state.goal ? " good" : "");
+    $("daysLeft").textContent = left;
+
+    $("goalInput").value = state.goal;
+    $("datePicker").value = selectedDate;
+    $("setsTitle").textContent = (selectedDate === todayStr() ? "Today's" : fmtDay(selectedDate) + "'s") + " sets";
+
+    var sets = state.days[selectedDate] || [];
+    var list = $("setsList");
+    list.innerHTML = "";
+    if (!sets.length) {
+      var n = document.createElement("div");
+      n.className = "empty-note";
+      n.textContent = "Nothing logged for this date yet.";
+      list.appendChild(n);
+    } else {
+      var sum = 0;
+      sets.forEach(function (r, i) {
+        sum += r;
+        var chip = document.createElement("span");
+        chip.className = "set-chip";
+        chip.appendChild(document.createTextNode(r + " "));
+        var x = document.createElement("button");
+        x.textContent = "×";
+        x.setAttribute("aria-label", "Remove set of " + r);
+        x.onclick = function () { removeSet(i); };
+        chip.appendChild(x);
+        list.appendChild(chip);
+      });
+      var tot = document.createElement("div");
+      tot.style.cssText = "width:100%;font-weight:700;margin-top:4px;";
+      tot.textContent = "Day total: " + fmt(sum);
+      list.appendChild(tot);
+    }
+
+    renderHistory();
+  }
+
+  function renderHistory() {
+    var card = $("historyCard");
+    card.innerHTML = "";
+    var keys = Object.keys(state.days).filter(function (k) { return state.days[k].length; }).sort().reverse();
+    if (!keys.length) {
+      var n = document.createElement("div");
+      n.className = "empty-note";
+      n.textContent = "No entries yet.";
+      card.appendChild(n);
+      return;
+    }
+    keys.forEach(function (k) {
+      var arr = state.days[k];
+      var sum = arr.reduce(function (a, b) { return a + b; }, 0);
+      var day = document.createElement("div");
+      day.className = "day";
+      var head = document.createElement("div");
+      head.className = "day-head";
+      var dl = document.createElement("span");
+      dl.className = "d";
+      dl.textContent = fmtDay(k) + (k === todayStr() ? " (today)" : "");
+      var dr = document.createElement("span");
+      dr.className = "t";
+      dr.textContent = arr.join("+") + "=" + fmt(sum);
+      head.appendChild(dl); head.appendChild(dr);
+      var body = document.createElement("div");
+      body.className = "day-sets hidden";
+      arr.forEach(function (r, i) {
+        var chip = document.createElement("span");
+        chip.className = "set-chip";
+        chip.appendChild(document.createTextNode(r + " "));
+        var x = document.createElement("button");
+        x.textContent = "×";
+        x.setAttribute("aria-label", "Remove set of " + r + " on " + fmtDay(k));
+        x.onclick = function (e) { e.stopPropagation(); removeSetAt(k, i); };
+        chip.appendChild(x);
+        body.appendChild(chip);
+      });
+      head.onclick = function () { body.classList.toggle("hidden"); };
+      day.appendChild(head); day.appendChild(body);
+      card.appendChild(day);
+    });
+  }
+
+  function addReps(n) {
+    n = Math.floor(+n);
+    if (!(n > 0)) return;
+    if (!state.days[selectedDate]) state.days[selectedDate] = [];
+    state.days[selectedDate].push(n);
+    save(); render();
+  }
+  function removeSet(i) {
+    var arr = state.days[selectedDate];
+    if (arr) { arr.splice(i, 1); if (!arr.length) delete state.days[selectedDate]; }
+    save(); render();
+  }
+  function removeSetAt(k, i) {
+    var arr = state.days[k];
+    if (arr) { arr.splice(i, 1); if (!arr.length) delete state.days[k]; }
+    save(); render();
+  }
+
+  document.querySelectorAll(".quick button").forEach(function (b) {
+    b.addEventListener("click", function () { addReps(b.getAttribute("data-reps")); });
+  });
+  $("customAdd").addEventListener("click", function () {
+    addReps($("customReps").value);
+    $("customReps").value = "";
+  });
+  $("customReps").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { addReps($("customReps").value); $("customReps").value = ""; }
+  });
+  $("datePicker").addEventListener("change", function () {
+    if ($("datePicker").value) { selectedDate = $("datePicker").value; render(); }
+  });
+  $("goalSave").addEventListener("click", function () {
+    var g = Math.floor(+$("goalInput").value);
+    if (g > 0) { state.goal = g; save(); render(); }
+  });
+
+  $("exportBtn").addEventListener("click", function () {
+    var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "pushup-backup-" + todayStr() + ".json";
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 500);
+  });
+  $("importFile").addEventListener("change", function () {
+    var f = $("importFile").files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var s = JSON.parse(r.result);
+        if (s && typeof s.days === "object") {
+          if (+s.goal > 0) state.goal = Math.floor(+s.goal);
+          state.days = s.days;
+          save(); render();
+          alert("Backup restored.");
+        } else { alert("That file doesn't look like a push-up backup."); }
+      } catch (e) { alert("Couldn't read that file."); }
+    };
+    r.readAsText(f);
+    $("importFile").value = "";
+  });
+  $("resetBtn").addEventListener("click", function () {
+    if (confirm("Delete ALL push-up data on this phone? This can't be undone. Export a backup first!")) {
+      state = { goal: 50000, days: {} };
+      selectedDate = todayStr();
+      save(); render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
